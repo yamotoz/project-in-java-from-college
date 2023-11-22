@@ -20,7 +20,7 @@ public class Principal extends JFrame implements MouseMotionListener {
 
     // config referente a largura da tela onde o jato vai parar e retroceder
     private final int telaLargura = 900;
-    
+
 
 
     public Principal() {
@@ -29,7 +29,7 @@ public class Principal extends JFrame implements MouseMotionListener {
 
         jatinho = new JatoLuxo();
         jatinho.setX(10);
-        jatinho.setY(240);
+        jatinho.setY(50);
         jatinho.setImg("jato.png");
 
 
@@ -77,7 +77,15 @@ public class Principal extends JFrame implements MouseMotionListener {
         g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
         moto.desenhar(g2);
         jatinho.desenhar(g2);
+        if(moto.intercepta(jatinho)){
+            System.out.println("sons de explosão BUMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+            moto.setImg("Motobatida.png");
+        }
+        if(jatinho.intercepta(moto)){
+            jatinho.setImg("jatinhoquebrado.png");
 
+
+        }
 
     }
 
@@ -114,19 +122,31 @@ public class Principal extends JFrame implements MouseMotionListener {
    public void atualizarJato(){
         int velocidade = 1;
         int deltaX = targetX - jatinho.getX();
-        if(deltaX>0){
-            for(int i=0;i<deltaX;i++){
-                jatinho.moverDireita(velocidade);
+
+
+        if (moto.intercepta(jatinho)) {
+
+             for (int i = 0; i < deltaX; i++) {
+                jatinho.moverBaixo(velocidade);
                 repaint();
-                //repaint() é usado para garantir que os gráficos sejam atualizados de acordo com as alterações no estado do jogo ou do aplicativo gráfico.
-                try{
+                try {
                     Thread.sleep(10);
-                }catch(InterruptedException e){
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
+        } 
+        else {
 
+            for (int i = 0; i < deltaX; i++) {
+                jatinho.moverDireita(velocidade);
+                repaint();
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         // calculo onde se o jato bater na largura da tela ele volta pra uma certa localização(no caso o 100 ali em baixo)
         if (jatinho.getX() < 1) {
@@ -134,9 +154,13 @@ public class Principal extends JFrame implements MouseMotionListener {
             jatinho.setX(telaLargura);
         } else if (jatinho.getX() > telaLargura) {
             // Reposicione o jato para o início da tela
-            jatinho.setX(100);
+            jatinho.setX(30);
         }  
    }
+
+
+
+
 
 
     @Override
